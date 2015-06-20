@@ -1,16 +1,16 @@
 shinyUI(fluidPage(
         
        
-        titlePanel("Race Performance Analyzer"),
+        titlePanel("Race Results Analyzer"),
         
         
         sidebarLayout(
                 sidebarPanel(
                         sliderInput("age.range",
-                                    label = h4("Select Runner Age Range"),
-                                    min = 10,
-                                    max = 80,
-                                    value = c(10,80))
+                                    label = "Select Runner Age Range",
+                                    min = 16,
+                                    max = 70,
+                                    value = c(16,70))
                        
                         ,
                         checkboxGroupInput("gender",
@@ -25,9 +25,10 @@ shinyUI(fluidPage(
                
                 mainPanel(
                         tabsetPanel(    type = "tabs", 
-                                        tabPanel("Finish Distribution", plotOutput("distPlot")), 
-                                        tabPanel("Race Summary", verbatimTextOutput("summary")), 
-                                        tabPanel("Leaderboard", tableOutput("table"))
+                                        tabPanel("Leaderboard", tableOutput("table")),
+                                        tabPanel("Results Summary", plotOutput("distPlot"), tableOutput("summary"))
+#                                         tabPanel("Race Summary", tableOutput("summary"))
+                                        
                                    )
                                 
                          )
