@@ -14,6 +14,7 @@ shinyServer(function(input, output) {
         printPace<-function(p){
                                 min<-floor(p)
                                 sec<-round((p-min)*60)
+                                
                                 min[sec==60]<-min[sec==60]+1
                                 sec[sec==60]<-0 
                                 paste0(as.character(min),":",sprintf("%02d",sec),' min/mile') }
@@ -51,10 +52,12 @@ shinyServer(function(input, output) {
                                         } )
         output$summary<-renderTable({ runnersub<-chilly[chilly$Age>=input$age.range[1] & chilly$Age<=input$age.range[2] & chilly$Gender %in% input$gender,]
                 
-                out<-data.frame(tapply(runnersub$Pacetime,
-                                  runnersub$age.class, 
-                                  mean))
-                out<-data.frame("Age Division" = row.names(out), "Average Pace" = printPace(out[,1]) )
+                out<-tapply(runnersub$Pacetime,
+                            runnersub$age.class, 
+                            mean,na.rm=TRUE)
+                
+        out<-out[!(is.na(out))]
+                out<-data.frame("Age Division" = row.names(out), "Average Pace" = printPace(out) )
                 row.names(out)<-NULL
                 out
                 
