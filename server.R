@@ -33,7 +33,7 @@ shinyServer(function(input, output) {
         #create times for calculations
         chilly$Ptime<-strptime(chilly$Time,format = "%H:%M:%S")
         secs<-with(chilly$Ptime,3600*hour+60*min+sec)
-        chilly$Pacetime<-(secs/13.1)/60
+        chilly$Pacetime<-(secs/13.1)/60  #Pacetime used for all calculations 
         chilly$Pace<-printPace(chilly$Pacetime)
 
         
@@ -59,25 +59,27 @@ shinyServer(function(input, output) {
                                                                  breaks = c("F","M"),
                                                                  labels = c("Women", "Men"))
                                         } )
+        
+        
         output$summary<-   renderTable({ 
                 
                 
                                         runnersub<-chilly[chilly$age.class %in% input$age.range & 
                                                           chilly$Gender    %in% input$gender,]
-               if (nrow(runnersub)>0) {
-                                        out<-aggregate(Pacetime~age.class+Gender,
-                                                       data = runnersub,
-                                                       function(x) {c (mean(x),median (x),min(x),length(x))})
-                
-                                        out<-data.frame("Age Division" = out$age.class,
-                                                        "Gender"       = out$Gender,
-                                                        "No of Runners" = as.integer(out$Pacetime[,4]),
-                                                        "Best Pace"    = printPace(out$Pacetime[,3]),
-                                                        "Average Pace" = printPace(out$Pacetime[,1]), 
-                                                        "Median Pace"  = printPace(out$Pacetime[,2])
-                                                        )
-
-                                        out}
+                                        if (nrow(runnersub)>0) {
+                                                                out<-aggregate(Pacetime~age.class+Gender,
+                                                                               data = runnersub,
+                                                                               function(x) {c (mean(x),median (x),min(x),length(x))})
+                                        
+                                                                out<-data.frame("Age Division" = out$age.class,
+                                                                                "Gender"       = out$Gender,
+                                                                                "No of Runners" = as.integer(out$Pacetime[,4]),
+                                                                                "Best Pace"    = printPace(out$Pacetime[,3]),
+                                                                                "Average Pace" = printPace(out$Pacetime[,1]), 
+                                                                                "Median Pace"  = printPace(out$Pacetime[,2])
+                                                                                )
+                        
+                                                                out}
                
                                                                            
                 })
