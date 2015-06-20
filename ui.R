@@ -6,23 +6,30 @@ shinyUI(fluidPage(
         
         sidebarLayout(
                 sidebarPanel(
-                        sliderInput("age.range",
-                                    label = "Select Runner Age Range",
-                                    min = 16,
-                                    max = 70,
-                                    value = c(16,70))
-                       
+                        checkboxGroupInput("age.range",
+                                                label = "Select Runner Age Range",
+                                                choices = list(`16-19` = "16-19",
+                                                               `20-29` = "20-29",
+                                                               `30-39` = "30-39",
+                                                               `40-49` = "40-49", 
+                                                               `50-59` = "50-59",
+                                                               `60 and Over` = "60 and Over"),
+                                                selected = c("16-19","20-29","30-39","40-49", "50-59","60 and Over"))
+                                    
+                                           #                                     
+                                           #                                     min = 16,
+                                           #                                     max = 67,
+                                           #                                     value = c(16,67))
+                                           #                         
                         ,
                         checkboxGroupInput("gender",
-                                          label = "Show Me: ",
+                                          label = "Select Gender ",
                                           choices = list(Men =   "M",
                                                       Women = "F"),
                                           selected = c("M","F"))
                              )
                 ,              
-                        
-                
-               
+                                            
                 mainPanel(
                         tabsetPanel(    type = "tabs", 
                                         tabPanel("Leaderboard", tableOutput("table")),

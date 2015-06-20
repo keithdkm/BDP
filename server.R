@@ -40,34 +40,48 @@ shinyServer(function(input, output) {
         #create age categorization for runners
 
         chilly$age.class<-cut(chilly$Age, 
-                              breaks = c(15,20,30,40,50,60,70),
+                              breaks = c(15,19,29,39,49,59,70),
                               labels = c("16-19","20-29","30-39","40-49", "50-59","60 and Over"))
       
      
         
-        output$distPlot <- renderPlot({ pts<-chilly[chilly$Age>=input$age.range[1] & chilly$Age<=input$age.range[2] & chilly$Gender %in% input$gender, 
+        output$distPlot <- renderPlot({ pts<-chilly[chilly$age.class    %in% input$age.range & 
+                                                    chilly$Gender %in% input$gender, 
                                                     c("Age","Ptime","Gender","age.class")] 
                                         
-                                        qplot(x = age.class,y = Ptime,data = pts, color = Gender,geom = c("boxplot"),xlab = "Age Division", ylab = "Finish Time")
+                                        qplot(x = age.class,
+                                              y = Ptime,data = pts, 
+                                              color = Gender,
+                                              geom = c("boxplot"),
+                                              xlab = "Age Division", 
+                                              ylab = "Finish Time (hh:mm)")+
+                                              scale_color_manual(values = c("M" = "#56B4E9",'F' = "#E69F00"),
+                                                                 breaks = c("F","M"),
+                                                                 labels = c("Women", "Men"))
                                         } )
-        output$summary<-renderTable({ runnersub<-chilly[chilly$Age>=input$age.range[1] & chilly$Age<=input$age.range[2] & chilly$Gender %in% input$gender,]
+        output$summary<-   renderTable({ 
                 
-                out<-tapply(runnersub$Pacetime,
-                            runnersub$age.class, 
-                            mean,na.rm=TRUE)
                 
-        out<-out[!(is.na(out))]
-                out<-data.frame("Age Division" = row.names(out), "Average Pace" = printPace(out) )
-                row.names(out)<-NULL
-                out
+                                        runnersub<-chilly[chilly$age.class %in% input$age.range & 
+                                                          chilly$Gender    %in% input$gender,]
+               if (nrow(runnersub)>0) {
+                                        out<-aggregate(Pacetime~age.class+Gender,
+                                                       data = runnersub,
+                                                       function(x) {c (mean(x),median (x),min(x),length(x))})
                 
-#                                                 ddply(chilly[chilly$Age>=input$age.range[1] & 
-#                                                    chilly$Age<=input$age.range[2] & 
-#                                                    chilly$Gender %in% input$gender,],.(Gender),summarize, 
-#                                                                                     Mean = mean(Pacetime))
+                                        out<-data.frame("Age Division" = out$age.class,
+                                                        "Gender"       = out$Gender,
+                                                        "No of Runners" = as.integer(out$Pacetime[,4]),
+                                                        "Best Pace"    = printPace(out$Pacetime[,3]),
+                                                        "Average Pace" = printPace(out$Pacetime[,1]), 
+                                                        "Median Pace"  = printPace(out$Pacetime[,2])
+                                                        )
+
+                                        out}
+               
+                                                                           
                 })
-        output$table <- renderTable({chilly[(chilly$Age>=input$age.range[1] & 
-                                             chilly$Age<=input$age.range[2] & 
-                                             chilly$Gender %in% input$gender),
+        output$table <- renderTable({chilly[(chilly$age.class %in% input$age.range & 
+                                             chilly$Gender    %in% input$gender),
                                                                                 c(2,4,6,5,3,9)]})   
 })
