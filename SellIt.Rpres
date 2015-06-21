@@ -1,0 +1,69 @@
+Running Race Analyzer
+========================================================
+author: Keith Miller
+date: June 20th, 2015
+
+Introduction
+========================================================
+- Running is an extremely popular sport around the world. 
+
+- The number of people running is growing every year
+ and, whether it be a local 5k or the Boston marathon, more people
+are running more races than ever before.  
+![alt text](SellIt-figure/FinishersGraph_1990to2013.jpg)
+
+
+Running Data
+========================================================
+
+- Most races publish their results on-line through sites like RaceWire or CoolRunning
+
+- Often that data consists of just a long list of finishers and their respective race times
+
+- Many runners would like some more in-depth comparison data 
+
+
+The Running Data Analyzer
+========================================================
+
+- The Running Data Analyzer takes running results data and enables that data to be filtered and aggregated by gender and age group
+- Using the race time, it calculates the pace of each runner
+- It calculates the average, median and best paces for each of the gender/age group combinations
+- It plots the aggregated results data so that runners can get a sense of how they performed compared to their peers
+- The following slide shows the code that calculates the running pace and categorizes the data by age division
+
+Sample Calculations and Output
+========================================================
+
+```{r, echo=FALSE  }
+library(stringr)
+printPace<-function(p){         min<-floor(p)
+                                sec<-round((p-min)*60)                                
+                                min[sec==60]<-min[sec==60]+1
+                                sec[sec==60]<-0 
+                                paste0(as.character(min),":",sprintf("%02d",sec),'m/mile') }
+        
+        chilly<-read.csv("chilly.csv",header= TRUE)
+        
+        chilly<-chilly[1:4,]        
+       #split Athlete details field into Age and Gender fields and remove original field
+        chilly[,c("Age","Gender")]<-str_split_fixed(chilly$Athlete.Details," ",n=3)[,c(1,3)]
+        chilly$Age<-as.integer(chilly$Age)
+        chilly$Gender<-as.factor(chilly$Gender)
+        chilly$Athlete.Details<-NULL 
+        names(chilly)[4]<-"Bib"
+```
+```{r}
+     
+chilly$Ptime<-strptime(chilly$Time,format = "%H:%M:%S")
+secs<-with(chilly$Ptime,3600*hour+60*min+sec)
+chilly$Pacetime<-(secs/13.1)/60  
+chilly$Pace<-printPace(chilly$Pacetime)    
+chilly$age.class<-cut(chilly$Age, 
+breaks = c(15,19,29,39,49,59,70),
+labels = c("16-19","20-29","30-39","40-49", "50-59","60 and Over"))
+chilly[,c(4,3,6,10,9)]
+```
+
+
+
