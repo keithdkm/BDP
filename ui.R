@@ -10,7 +10,8 @@ what it can do, it has been loaded with data
 
 The app provides two views of the data - a Leaderboard tab that 
                           lists the competitors in the order that they finished their race and a Results Summary tab that plots the distribution of the runners by their gender and age division.
-                          The runners can be filtered from both views to exclude genders and age divisions by checking and unchecking the boxes on the left of the page'),offset = 0.25,width =11)),
+                          The runners can be filtered from both views to exclude genders and age divisions by checking and unchecking the boxes on the left of the page',  
+                          p("The app calculates the min/mile pace that most runners use to measure their performance")),offset = 0.25,width =11)),
         sidebarLayout(
                 sidebarPanel(
                         checkboxGroupInput("age.range",
