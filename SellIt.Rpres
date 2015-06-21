@@ -30,8 +30,8 @@ The Running Data Analyzer
 
 - The Running Data Analyzer takes running results data and enables that data to be filtered and aggregated by gender and age group
 - Using the race time, it calculates the pace of each runner
-- Calculates the average, median and best paces for each of the gender/age group combinations
-- Plots the aggregated results data so that runners can get a sense of how they performed compared to their peers
+- It calculates the average, median and best paces for each of the gender/age group combinations
+- It plots the aggregated results data so that runners can get a sense of how they performed compared to their peers
 - The following slide shows the code that calculates the running pace and categorizes the data by age division
 
 Sample Calculations and Output
